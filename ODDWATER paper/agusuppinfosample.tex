@@ -1,0 +1,228 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Supporting Information
+%% (Optional)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% OVERVIEW
+%
+% Please note that all supporting information will be peer reviewed with your manuscript.
+% In general, the purpose of the supporting information is to enable
+% authors to provide and archive auxiliary information such as data
+% tables, method information, figures, video, or computer software,
+% in digital formats so that other scientists can use it.
+
+% The key criteria are that the data:
+% 1. supplement the main scientific conclusions of the paper but are not essential to the conclusions (with the exception of
+%    including data so the experiment can be reproducible);
+% 2. are likely to be usable or used by other scientists working in the field;
+% 3. are described with sufficient precision that other scientists can understand them, and
+% 4. are not exe files.
+%
+
+% All Supporting text and figures should be included in this document.
+
+% Data sets, large tables, movie files,
+% and audio files should be uploaded separately, following AGU naming
+% conventions. Include their captions in this document and list the
+% file name with the caption. You will be prompted to upload these
+% files on the Upload Files tab during the submission process, using
+% file type “Supporting Information (SI)”
+
+\documentclass{agujournal2018}
+%\pagestyle{empty} % pri to remove the header
+% Please type in the journal name: \journalname{<Journal Name>}
+% ie,
+\journalname{Water Resources Research}
+
+%% Choose from this list of Journals:
+%
+% Journal of Geophysical Research
+% JGR-Biogeosciences
+% JGR-Earth Surface
+% JGR-Planets
+% JGR-Solid Earth
+% JGR-Space Physics
+% Global Biochemical Cycles
+% Geophysical Research Letters
+% Paleoceanography
+% Radio Science
+% Reviews of Geophysics
+% Tectonics
+% Space Weather
+% Water Resource Research
+% Geochemistry, Geophysics, Geosystems
+% Journal of Advances in Modeling Earth Systems (JAMES)
+% Earth's Future
+% Earth and Space Science
+
+\begin{document}
+
+%% This command needs article title as argument to \supportinginfo{}:
+\supportinginfo{A feature-based \color{black} procedure \color{black} for detecting technical outliers in water-quality data from in situ sensors}
+
+\authors{Priyanga Dilini Talagala\affil{1,2}, Rob J. Hyndman\affil{1,2}, Catherine Leigh\affil{1,3}, Kerrie Mengersen\affil{1,4}, Kate Smith-Miles\affil{1,5}}
+
+
+\affiliation{1}{ARC Centre of Excellence for Mathematics and
+Statistical Frontiers (ACEMS), Australia}
+\affiliation{2}{Department of Econometrics and Business Statistics, Monash University,
+Australia}
+\affiliation{3}{Institute for Future Environments, Science and Engineering Faculty, Queensland University of Technology, Australia}
+\affiliation{4}{School of Mathematical Sciences, Science and Engineering Faculty, Queensland University of Technology, Australia}
+\affiliation{5}{School of Mathematics and Statistics, University of Melbourne, Australia}
+
+
+
+%% Corresponding Author
+%(include name and email addresses of the corresponding author.  More
+%than one corresponding author is allowed in this Word file and for
+%publication; but only one corresponding author is allowed in our
+%editorial system.)  
+
+\correspondingauthor{Priyanga Dilini Talagala}{dilini.talagala@monash.edu}
+
+%% ------------------------------------------------------------------------ %%
+%
+%  TEXT
+%
+%% ------------------------------------------------------------------------ %%
+
+\section*{Contents}
+%%%Remove or add items as needed%%%
+\begin{enumerate}
+\item Text S1 
+\end{enumerate}
+
+
+\section*{Introduction}
+
+We considered the following outlier scoring techniques for the \color{black} current work \color{black}
+presented in this paper. The \color{black} oddwater procedure \color{black} can be easily updated
+with other unsupervised outlier scoring techniques.
+
+%Delete all unused file types below. 
+%Copy/paste for multiples of each file type as needed.
+
+\section*{Text S1.}
+
+
+
+\subsection*{\color{black} NN-HD \color{black} algorithm}\label{hdoutliers-algorithm}
+
+\color{black}This algorithm is inspired by the HDoutliers algorithm \citep{wilkinsonvisualizing} which is an unsupervised outlier detection algorithm that searches for outliers in
+high dimensional data assuming there is a large distance between
+outliers and the typical data. \color{black} Nearest neighbor distances between points
+are used to detect outliers. However, variables with large variance can
+bring disproportional influence on Euclidean distance calculation.
+Therefore, the columns of the data sets are first normalized such that
+the data are bounded by the unit hyper-cube. The nearest neighbor distances are then
+calculated for each observation. \color{black} In contrast to the implementation of HDoutliers algorithm available in the \texttt{HDoutliers} package \citep{RHDoutliers2018} our implementation available through the \texttt{oddwater} package now generates outlier scores instead of labels for each observation. \color{black}
+
+\subsection*{KNN-AGG and KNN-SUM
+algorithms}\label{knn-agg-and-knn-sum-algorithms}
+
+The \color{black} NN-HD  algorithm uses only nearest neighbor distances to detect
+outliers under the assumption that any outlying point present in the data set is isolated. For example, if
+there are two outlying points that
+are close to one another, but are far away from the rest of the valid
+data points, then the two outlying points become nearest neighbors to one another and give a small nearest
+neighbor distance for each outlying point. Because the NN-HD algorithm is dependent on the nearest
+neighbor distances, and the two outlying points  do not show any significant deviation from other
+typical points with respect to nearest neighbor distance, the NN-HD
+algorithm now fails to detect these points as outliers. \color{black}
+
+Following \citet{angiulli2002fast}, \citet{madsen2018ddoutlier}
+proposed two algorithms: aggregated \(k\)-nearest neighbor distance
+(KNN-AGG); and sum of distance of \(k\)-nearest neighbors (KNN-SUM) to
+overcome this limitation by incorporating \(k\) nearest neighbor
+distances for the outlier score calculation. The algorithms start by
+calculating the \(k\) nearest neighbor distances for each point. The
+\(k\)-dimensional tree (kd-tree) algorithm
+\citep{bentley1975multidimensional} is used to identify the \(k\)
+nearest neighbors of each point in a fast and efficient manner. A weight
+is then calculated using the \(k\) nearest neighbor distances and the
+observations are ranked such that outliers are those points having the
+largest weights. For KNN-SUM, the weight is calculated by taking the
+summation of the distances to the \(k\) nearest neighbors. For KNN-AGG,
+the weight is calculated by taking a weighted sum of distances to \(k\)
+nearest neighbors, assigning nearest neighbors higher weight relative to
+the neighbors father apart.
+
+\subsection*{LOF algorithm}\label{lof-algorithm}
+The Local Outlier Factor (LOF) algorithm \citep{breunig2000lof}
+calculates an outlier score based on how isolated a point is with
+respect to its surrounding neighbors. Data points with a lower density
+than their surrounding points are identified as outliers. The local
+reachable density of a point is calculated by taking the inverse of the
+average readability distance based on the \(k\) (user defined) nearest
+neighbors. This density is then compared with the density of the
+corresponding nearest neighbors by taking the average of the ratio of
+the local reachability density of a given point and that of its nearest
+neighbors.
+
+\subsection*{COF algorithm}\label{cof-algorithm}
+One limitation of LOF is that it assumes that the outlying points are
+isolated and therefore fails to detect outlying clusters of points that
+share few outlying neighbors if \(k\) is not appropriately selected
+\citep{tang2002enhancing}. This is known as a masking problem
+\citep{hadi1992identifying}, i.e.~LOF assumes both low density and
+isolation to detect outliers. However, isolation can imply low density,
+but the reverse does not always hold. In general, low density outliers
+result from deviation from a high density region and an isolated outlier
+results from deviation from a connected dense pattern.
+\citet{tang2002enhancing} addressed this problem by introducing a
+Connectivity-based Outlier Factor (COF) that compares the average
+chaining distances between points subject to outlier scoring and the
+average of that of its neighboring to their own \(k\)-distance
+neighbors.
+
+\subsection*{INFLO algorithm}\label{inflo-algorithm}
+
+Detection of outliers is challenging when data sets contain adjacent
+multiple clusters with different density distributions
+\citep{jin2006ranking}. For example, if a point from a sparse cluster
+is close to a dense cluster, this could be misclassified as an outlier
+with respect to the local neighborhood as the density of the point could
+be derived from the dense cluster instead of the sparse cluster itself.
+This is another limitation of LOF \citep{breunig2000lof}. The
+Influenced Outlierness (INFLO) algorithm \citep{jin2006ranking}
+overcomes this problem by considering both the \(k\) nearest neighbors
+(KNNs) and reverse nearest neighbors (RNNs), which allows it to obtain a
+better estimation of the neighborhood's density distribution. The RNNs
+of an object, \(p\) for example, are essentially the objects that have
+\(p\) as one of their \(k\) nearest neighbors. Distinguish typical
+points from outlying points is helpful because they have no RNNs. To
+reduce the expensive cost incurred by searching a large number of KNNs
+and RNNs, the kd-tree algorithm was used during the search process.
+
+\subsection*{LDOF algorithm}\label{ldof-algorithm}
+The Local Distance-based Outlier Factor (LDOF) algorithm
+\citep{zhang2009new} also uses the relative location of a point to
+its nearest neighbors to determine the degree to which the point
+deviates from its neighborhood. LDOF computes the distance for an
+observation to its \(k\)-nearest neighbors and compares the distance
+with the average distances of the point's nearest neighbors. In contrast
+to LOF \citep{breunig2000lof}, which uses local density, LDOF now
+uses relative distances to quantify the deviation of a point from its
+neighborhood system. One of the main differences between the two
+approaches (LDOF and LOF) is that LDOF represents the typical pattern of
+the data set by scattered points rather than crowded main clusters as in
+LOF \citep{zhang2009new}.
+
+\subsection*{RKOF algorithm with Gaussian
+kernel}\label{rkof-algorithm-with-gaussian-kernel}
+
+According to \citet{gao2011rkof}, LOF is not accurate enough to
+detect outliers in complex and large data sets. Furthermore, the
+performance of LOF depends on the parameter \(k\) that determines the
+scale of the local neighborhood. The Robust Kernel-based Outlier Factor
+(RKOF) algorithm \citep{gao2011rkof} tries to overcome these problems
+by incorporating variable kernel density estimates to address the first
+problem and weighted neighborhood density estimates to address the
+second problem. \color{black} A Gaussian kernel with a bandwidth of \(k-distance\) was used for density estimation. The two parameters: multiplication parameter for \(k-distance\) of neighboring observations and sensivity parameter for \(k-distance\) were set to 1 (default value given in \citet{gao2011rkof}). \color{black}
+
+%%Enter Data Set, Movie, and Audio captions here
+%%EXAMPLE CAPTIONS
+
+\bibliography{bibliography.bib}
+
+\end{document}
